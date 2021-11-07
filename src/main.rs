@@ -13,11 +13,8 @@ use isahc::config::IpVersion;
 use scraper::{Html, Selector};
 
 fn main() -> Result<(), std::io::Error> {
-    loop {
-        send_debug!("Running dyndns update!");
-        update()?;
-        sleep(Duration::from_secs(600));
-    }
+    update()?;
+    Ok(())
 }
 
 fn update() -> Result<(), isahc::Error> {
