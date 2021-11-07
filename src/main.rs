@@ -1,6 +1,3 @@
-use std::thread::sleep;
-use std::time::Duration;
-
 pub mod config;
 pub mod errorhandler;
 use config::*;
