@@ -12,3 +12,8 @@ scraper = "0.12.0"
 toml = "0.5.8"
 serde = {version = "1.0.130", features = ["derive"]}
 colorful = "0.2.1"
+
+[features]
+default = ["loop_run"]
+loop_run = []
+once_run = []

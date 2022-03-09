@@ -1,6 +1,12 @@
+#![warn(clippy::pedantic)]
+#![allow(unused_imports)]
+#![allow(dead_code)]
 pub mod config;
 pub mod errorhandler;
-use config::*;
+use config::{Configuration, get_configuration};
+
+use std::thread::sleep;
+use std::time::Duration;
 
 use colorful::{Color, Colorful};
 
@@ -10,8 +16,18 @@ use isahc::config::IpVersion;
 use scraper::{Html, Selector};
 
 fn main() -> Result<(), std::io::Error> {
+    #[cfg(all(not(feature = "once_run"), feature = "loop_run"))]
+    loop_run()?;
+    #[cfg(feature = "once_run")]
     update()?;
     Ok(())
+}
+
+fn loop_run() -> Result<(), isahc::Error> {
+    loop {
+        update()?;
+        sleep(Duration::from_secs(5 * 60));
+    }
 }
 
 fn update() -> Result<(), isahc::Error> {
@@ -25,23 +41,19 @@ fn update() -> Result<(), isahc::Error> {
     let parsed_html: Html = Html::parse_document(rawhtml.as_str());
     let selector = Selector::parse("span").unwrap();
 
-    let mut raw_ip: String;
-
-    raw_ip = parsed_html.select(&selector).next().unwrap().inner_html();
-
-    let ip: String;
+    let mut raw_ip = parsed_html.select(&selector).next().unwrap().inner_html();
 
     raw_ip.remove(0);
     raw_ip.pop();
 
-    if !configuration.fritzbox {
-        ip = raw_ip;
-    } else {
+    let ip: String = if configuration.fritzbox {
         let segments: Vec<&str> = raw_ip.split(':').collect();
         let ip_start: String = segments[..4].join(":");
 
-        ip = format!("{}:{}", ip_start, configuration.interfaceid.unwrap());
-    }
+        format!("{}:{}", ip_start, configuration.interfaceid.unwrap())
+    } else {
+        raw_ip
+    };
 
     let uri = format!("https://www.duckdns.org/update?domains={}&token={}&ipv6={}", configuration.domain, configuration.token, ip);
 

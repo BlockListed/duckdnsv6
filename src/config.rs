@@ -13,6 +13,10 @@ pub struct Configuration {
     pub interfaceid: Option<String>,
 }
 
+/// # Errors
+/// When path not exist
+/// # Panics
+/// When path not valid toml
 pub fn get_configuration() -> Result<Configuration, String> {
     let path: &Path = Path::new(CONF_PATH);
     if ! path.exists() {

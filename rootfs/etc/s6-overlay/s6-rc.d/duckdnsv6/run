@@ -1,0 +1,6 @@
+#!/command/with-contenv sh
+if [ ! -f /etc/duckdnsv6/duckdnsv6.toml ]; then
+	mkdir -p /etc/duckdnsv6
+	cp /usr/doc/duckdnsv6/duckdnsv6.toml /etc/duckdnsv6/
+fi
+exec s6-setuidgid daemon /usr/local/bin/duckdnsv6

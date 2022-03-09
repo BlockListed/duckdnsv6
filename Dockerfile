@@ -1,10 +1,10 @@
-FROM rust:alpine as builder
+FROM rust:1.59 as builder
 WORKDIR /usr/src/duckdnsv6
 COPY . .
-RUN make
+RUN cargo install --path .
 
-FROM debian:bullseye-slim
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /opt/cargo/bin/duckdnsv6 /usr/bin
-COPY --from=builder /opt/cargo/duckdnsv6/duckdnsv6.toml /usr/share/doc/
-CMD ['duckdnsv6']
+FROM s6on/debian
+COPY --from=builder /usr/src/duckdnsv6/doc/duckdnsv6.toml /usr/doc/duckdnsv6/
+COPY --from=builder /usr/local/cargo/bin/duckdnsv6 /usr/local/bin/duckdnsv6
+COPY rootfs/ /
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
