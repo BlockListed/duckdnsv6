@@ -1,0 +1,7 @@
+token = "Token"
+domain = "Domain"
+# DO NOT MODIFY. This client is only setup to parse this.
+ipv6lookup = "https://nsx.de/"
+# This is for fritz.box users only
+fritzbox = true
+interfaceid = "1:1ff:fe11:1111"

@@ -1,4 +1,4 @@
-FROM rust:latest as builder
+FROM rust:alpine as builder
 WORKDIR /usr/src/duckdnsv6
 COPY . .
 RUN make
