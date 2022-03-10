@@ -9,8 +9,6 @@ pub struct Configuration {
     pub token: String,
     pub domain: String,
     pub ipv6lookup: String,
-    pub fritzbox: bool,
-    pub interfaceid: Option<String>,
 }
 
 /// # Errors

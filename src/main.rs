@@ -41,19 +41,10 @@ fn update() -> Result<(), isahc::Error> {
     let parsed_html: Html = Html::parse_document(rawhtml.as_str());
     let selector = Selector::parse("span").unwrap();
 
-    let mut raw_ip = parsed_html.select(&selector).next().unwrap().inner_html();
+    let mut ip = parsed_html.select(&selector).next().unwrap().inner_html();
 
-    raw_ip.remove(0);
-    raw_ip.pop();
-
-    let ip: String = if configuration.fritzbox {
-        let segments: Vec<&str> = raw_ip.split(':').collect();
-        let ip_start: String = segments[..4].join(":");
-
-        format!("{}:{}", ip_start, configuration.interfaceid.unwrap())
-    } else {
-        raw_ip
-    };
+    ip.remove(0);
+    ip.pop();
 
     let uri = format!("https://www.duckdns.org/update?domains={}&token={}&ipv6={}", configuration.domain, configuration.token, ip);
 
